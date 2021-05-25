@@ -1,0 +1,43 @@
+---
+- name: nginx yum repository should be installed
+  become: yes
+  ansible.builtin.template:
+    src: nginx.repo.j2
+    dest: /etc/yum.repos.d/nginx.repo
+    mode: 0644
+    owner: root
+    group: root
+
+- name: nginx should be installed
+  become: yes
+  ansible.builtin.yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - nginx
+  notify:
+    - restart nginx
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: nginx should be started and enabled at boot
+  become: yes
+  ansible.builtin.systemd: 
+    name: nginx 
+    enabled: yes
+    state: started
+
+- name: get nginx version
+  become: yes
+  ansible.builtin.shell: 
+    cmd: "nginx -version 2>&1"
+  register: nginx_installed_version
+  changed_when: no
+
+- name: print installed nginx version
+  ansible.builtin.debug:
+    var: nginx_installed_version.stdout
+    verbosity: 1

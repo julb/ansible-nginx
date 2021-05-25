@@ -1,0 +1,21 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: get nginx systemd service status
+      become: yes
+      ansible.builtin.systemd:
+        name: nginx.service
+        state: started
+      check_mode: yes
+      register: nginx_systemd_status
+
+    - name: check nginx systemd service is running
+      assert:
+        that:
+          - nginx_systemd_status.status.ActiveState == 'active'
+          - nginx_systemd_status.status.ExecMainCode == '0'
+          - nginx_systemd_status.status.ExecMainStatus == '0'

@@ -1,0 +1,6 @@
+---
+nginx_version: 1.20.0
+nginx_centos_yum_repository_stable_url: https://nginx.org/packages/centos
+nginx_centos_yum_repository_mainline_url: https://nginx.org/packages/mainline/centos
+nginx_centos_gpg_key_url: https://nginx.org/keys/nginx_signing.key
+nginx_centos_yum_repository_mainline_enabled: false
